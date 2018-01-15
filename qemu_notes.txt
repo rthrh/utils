@@ -1,0 +1,46 @@
+###openvswitch
+
+/sbin/modprobe openvswitch                  # load kernel module that u need
+/sbin/lsmod | grep openvswitch              # check if module is loaded
+
+ovs-vsctl add-br br0                        # create a bridge named br0
+ovs-vsctl add-port br0 eth0                 # add a port to the bridge for the NIC that you want your guests to communicate over
+ovs-dpctl show
+ovs-ofctl show br0
+
+/sbin/modprobe openvswitch                  # load openvswitch kernel module
+/sbin/lsmod | grep openvswitch              # verify ovs is loaded
+
+
+###page size
+
+grep Huge /proc/meminfo                     # retrieve the current available/used page for the default huge page
+hugeadm --page-sizes-all                    # get a list of available huge page size
+
+grep pdpe1gb /proc/cpuinfo | uniq           # if command returns non-e,pty string, 1GB pages are supported
+grep pse /proc/cpuinfo | uniq               # - | | - 2MB pages are supported
+grep HUGETLB /boot/config-$(uname -r)       # Standard Debian Kernel have HUGETLB enabled 
+
+
+
+
+
+
+###sys network command line
+uptime                                      # current uptime
+ps -ef | grep "something"                   # pipe processess output to grep and find "something"
+env                                         # print enviromental variables
+top                                         # info about resources for all procesess
+netstat                                     # network status
+df -h                                       # display free hd space
+dig                                         # DNS lookup utility
+nslookup  www.google.com                    # resolve dns for given url/ip
+curl -vvv google.com                        # test connection to url
+iptables -S                                 # allow/manage traffic
+ifconfig eth0 down                          # will take eth0 down, until you run the same with 'up'
+ifcfg eth0 del 192.168.0.1                  # config eth0 rom 192.168.0.1 to 192.168.0.2
+ifcfg eth0 add 192.168.0.2  
+traceroute www.google.com                   # attempt to provide a list of all routers your connection cross when reaching remote system
+whois google.com                            # info about domain
+hostname                                    # current hostname (-i for ip output)
+tcpdump                                     # print out headers of network packets
