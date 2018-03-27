@@ -1,0 +1,150 @@
+###openvswitch + kvm
+
+/sbin/modprobe openvswitch                  # load kernel module that u need
+/sbin/lsmod | grep openvswitch              # check if module is loaded
+
+ovs-vsctl add-br br0                        # create a bridge named br0
+ovs-vsctl add-port br0 eth0                 # add a port to the bridge for the NIC that you want your guests to communicate over
+ovs-dpctl show
+ovs-ofctl show br0
+
+/sbin/modprobe openvswitch                  # load openvswitch kernel module
+/sbin/lsmod | grep openvswitch              # verify ovs is loaded
+
+
+###page size
+
+grep Huge /proc/meminfo                     # retrieve the current available/used page for the default huge page
+hugeadm --page-sizes-all                    # get a list of available huge page size
+
+grep pdpe1gb /proc/cpuinfo | uniq           # if command returns non-e,pty string, 1GB pages are supported
+grep pse /proc/cpuinfo | uniq               # - | | - 2MB pages are supported
+grep HUGETLB /boot/config-$(uname -r)       # Standard Debian Kernel have HUGETLB enabled 
+
+
+
+###sys network common command line
+uptime                                      # current uptime
+ps -ef | grep "something"                   # pipe processess output to grep and find "something"
+pkill nes                                   # kill process nes
+env                                         # print enviromental variables
+top                                         # info about resources for all procesess
+netstat                                     # network status
+df -h                                       # display free hd space
+dig                                         # DNS lookup utility
+nslookup  www.google.com                    # resolve dns for given url/ip
+curl -vvv google.com                        # test connection to url
+iptables -S                                 # allow/manage traffic
+ifconfig eth0 down                          # will take eth0 down, until you run the same with 'up'
+ifcfg eth0 del 192.168.0.1                  # config eth0 rom 192.168.0.1 to 192.168.0.2
+ifcfg eth0 add 192.168.0.2  
+traceroute www.google.com                   # attempt to provide a list of all routers your connection cross when reaching remote system
+whois google.com                            # info about domain
+hostname                                    # current hostname (-i for ip output)
+tcpdump                                     # print out headers of network packets
+lscpu                                       # print cpu info
+sudo poweroff                               # power off machine
+sudo reboot                                 # reboot machine
+
+
+####
+tail -f /var/log/message | grep nes         # grep nes from message log
+
+mount -t hugetlbfs /mnt/huge -1048576kB     # mount huge pages
+
+rpm -qa | grep qemu                         # check if qemu is installed
+yum list                                    # list packages
+dpkg -s nano                                # check if nano is installed and display info
+
+brctl					                    # create network bridges
+            
+
+###ssh and files
+scp -r vm mec@10.255.255.3:
+sudo /etc/init.d/ssh restart 		        #restart ssh if when scp -> connection refused (try on vm and host)
+dd if=/dev/zero of=Centos.raw bs=1G count=25    #create raw file placeholder
+
+
+###dpdk
+cd opt/dpdk.../tools/
+./dpdk-devbind.py --help                   # devbind
+
+###### nes
+cd isg_cid_wireless_mec/scripts             #start daemon
+./nes-daemon-start
+
+tail /var/logs/messages | grep "nes-daemon" #find logs
+tail /var/log/nes.log                     
+
+export NES_SERVER_CONF=$PWD/nes.cfg         #export var and run nes
+../nes/client/build/nes_client
+
+"""
+connect
+show all
+show rings
+help
+encap show
+route add
+route del
+
+#drugi terminal
+ssh gg-mes
+cd /home/gg/
+./cemtps_vm_start.sh
+
+(do show all now)
+vim ../nes.daemon/Makefile #add flags
+run make in build
+
+./nes_daemon
+ssh net-pktgen 
+ping (192.168.210.10)
+
+
+#learning
+ping <ip>
+
+new terminal
+ssh gg-core
+tcpdump -i eth1
+
+route add -net 192.168.210.0/24 gw 192.168.1.5 (vm address)
+arp -s 192.168.210.10 a4:bf:01:02:21:14 #set mac address to ip
+
+ping 192.168.210.10 #ping ipc 
+ping 192.168.1.5    #ping vm
+
+
+
+#commands review
+arp -s IP MAC
+arp -d 192.168.100.120      # remove that ip entry from arp
+route add -net IP_DST/MASK gw IP_INTERFEJSU_PRZEZKTORY_MA_WYJSC
+encap show UE_IP    #show learning
+
+route add VM_MAC #vmmac = mac adres docelowej VM
+#encap_proto = noencap = ruch tylko IP
+
+prio:99, encap_proto, srv_ip:192.168.1.5
+
+
+#virtual machine file
+
+sync
+losetup -f
+partprobe /dev/loop0
+fdisk /dev/loop0
+fsck /dev/loop0p1
+
+lsblk -f                # check lvm (file system type)
+xfs_repair -n -f /dev/looplsblk -f      #check xfs consistency
+lvscan                  #list all logical volums in all volume groups
+vgdisplay               #display atributes of volume groups
+
+
+## set routing
+route -n
+iptables -L-n       # check firewall policies
+
+
